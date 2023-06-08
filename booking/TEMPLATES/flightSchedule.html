@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>{{ current_user.name }}</h1>
+    {% for flight in flights %}
+      <li>{{ flight }}</li>
+    {% endfor %}
+ 
+
+{% endblock content %}

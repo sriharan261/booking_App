@@ -1,0 +1,13 @@
+{% extends "admintemp.html" %}
+
+ {%block content%}
+<div>
+<a href="{{ url_for('add') }}"> ADD Flight </a>
+</div>
+<div>
+<a href="{{ url_for('delete') }}"> Delete Flight </a>
+</div>
+<div>
+<a href="{{ url_for('search') }}"> Serach Flight </a> 
+</div>
+{% endblock content %}

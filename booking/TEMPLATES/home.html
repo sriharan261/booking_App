@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content%}
+<form method="POST" action="/flight">
+
+{{form.hidden_tag()}}
+{{ form.dep.label}}
+{{form.dep}}
+{{form.arv.label}}
+{{form.arv}}
+{{form.depDate.label}}
+{{form.depDate}}
+{{form.retDate.label}}
+{{form.retDate}}
+{{form.adult.label}}
+{{form.adult}}
+{{form.child.label}}
+{{form.child}}
+{{form.submit}}
+</form>
+{% endblock content%}
