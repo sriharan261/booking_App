@@ -9,13 +9,15 @@ from flask_login import login_user, current_user, logout_user, login_required
 def home():
       form=Flights()
       if form.validate_on_submit():
-        name=Flight.query.find(name=form.name.data)
-        date=Flight.query.find(name=form.name.data)
-        to=Flight.query.find(name=form.name.data)
-        form=Flight.query.find(name=form.name.data)
-
-        flight =Flight.query.where(name and date and form and to)
-        return render_template('flight,html',flights=flight)
+        name=form.name.date
+        date=form.date.data
+        form=form.form.data
+        to=form.to.data
+        count=int(form.adult.data)+int(form.child.data)
+        flight =Flight.query.filter(name and date and form and to)
+        for i in flight:
+             if i.seat+count< 61:
+                return render_template('flight,html',flights=flight)
       return render_template("home.html",form=form)
 
 @app.route("/flight")
