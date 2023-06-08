@@ -5,7 +5,8 @@ This an flight booking application
 to run this application 
 
 run the following command in Terminal
-   pip install -r requirement.txt
+   
+>>pip install -r requirement.txt
    
 now in Terminal
 >> python
