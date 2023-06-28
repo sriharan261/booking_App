@@ -1,13 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import DateField
-from wtforms import  StringField , IntegerField, SubmitField ,DateField,PasswordField,BooleanField,TimeField
+from wtforms import  StringField , IntegerField, SubmitField ,DateField,PasswordField,BooleanField,TimeField,SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from booking.model import User
 import datetime
 
 class Flights(FlaskForm):
-    dep = StringField( "From", validators=[DataRequired()])
-    arv = StringField("To",validators=[DataRequired()])
+    dep = SelectField("From",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] ,validators=[DataRequired()])
+    arv = SelectField("To",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] ,validators=[DataRequired()])
     depDate = DateField('deptDate', validators=[DataRequired()], format='%Y-%m-%d')
     retDate = DateField('retDate', format='%Y-%m-%d')
     adult =StringField("Adult")
@@ -30,6 +30,11 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('That email is taken. Please choose a different one.')
+    def validate_phone(self,phone):
+                user = User.query.filter_by(phone=phone.data).first()
+                if user:
+                 raise ValidationError('That phone is taken. Please choose a different one.')
+
 
 class LoginForm(FlaskForm):
     email=StringField('email',validators=[DataRequired()])
@@ -46,9 +51,10 @@ class LoginAdminForm(FlaskForm):
     submit=SubmitField("login")
 
 class AddFlight(FlaskForm):
+    to = SelectField("to",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] ,validators=[DataRequired()])
+    form = SelectField("form",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] ,validators=[DataRequired()])
     name=StringField("name",validators=[DataRequired()])
-    form=StringField("form",validators=[DataRequired()])
-    to=StringField("to",validators=[DataRequired()])
+    
     date=DateField("date",validators=[DataRequired()])
     time=IntegerField("time",validators=[DataRequired()])
     cost=IntegerField("Price",validators=[DataRequired()])
@@ -56,8 +62,9 @@ class AddFlight(FlaskForm):
     
 class RemoveFlight(FlaskForm):
     name=StringField("name",validators=[DataRequired()])
-    form=StringField("form")
-    to=StringField("to")
+    to = SelectField("to",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] ,validators=[DataRequired()])
+    form = SelectField("form",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] ,validators=[DataRequired()]   )
+    
     date=DateField("date")
     time=IntegerField("time")
     submit=SubmitField("sumbit")    
@@ -65,8 +72,8 @@ class RemoveFlight(FlaskForm):
 
 class SearchFlight(FlaskForm):
     name=StringField("name",validators=[DataRequired()])
-    form=StringField("form")
-    to=StringField("to")
+    to = SelectField("to",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] )
+    form = SelectField("form",choices=[("Chennai"),("Delhi"),("Mumbai"),("Hyderabad"),("Bangalore")] )
     date=DateField("date")
     time=IntegerField("time")
     submit=SubmitField("sumbit")    
