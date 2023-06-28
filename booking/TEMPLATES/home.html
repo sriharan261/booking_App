@@ -1,21 +1,24 @@
 {% extends "layout.html" %}
 
 {% block content%}
-<form method="POST" action="/flight">
-
+<form method="POST" action="/home">
+<table>
 {{form.hidden_tag()}}
-{{ form.dep.label}}
-{{form.dep}}
-{{form.arv.label}}
-{{form.arv}}
-{{form.depDate.label}}
-{{form.depDate}}
-{{form.retDate.label}}
-{{form.retDate}}
-{{form.adult.label}}
-{{form.adult}}
-{{form.child.label}}
-{{form.child}}
-{{form.submit}}
+<tr>
+<td>{{ form.dep.label}}</td>
+<td>{{form.arv.label}}</td>
+<td>{{form.depDate.label}}</td>
+<td>{{form.adult.label}}</td>
+<td>{{form.child.label}}</td></tr>
+<tr>
+<td>{{form.dep}}</td>
+<td>{{form.arv}}</td>
+<td>{{form.depDate}}</td>
+<td>{{form.adult}}</td>
+<td>{{form.child}}</td>
+</tr>        
+</table>
+<spam style="position: relative;">{{form.submit (class="btn")}}</spam>
 </form>
 {% endblock content%}
+

@@ -1,7 +1,9 @@
 {% extends "admintemp.html" %}
 {%block content%}
 
-<form action="">
+<form method="post" action="/add">
+
+{{form.hidden_tag()}}
 {{form.name.label}}
 {{form.name}}
 {{form.form.label}}
@@ -12,8 +14,9 @@
 {{form.date}}
 {{form.time.label}}
 {{form.time}}
-
-{{form.sumbit}}
+{{form.cost.label}}
+{{form.cost}}
+{{form.submit}}
 
 </form>
 {%endblock content%}

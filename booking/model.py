@@ -15,11 +15,11 @@ class User(db.Model,UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(10),unique=True,nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    ticket= db.relationship("Ticket", backref="Ticket",lazy=True)
+    ticket= db.relationship("Ticket", backref="User")
     def __repr__(self):
-        return f"User('{self.name}', '{self.email}')"
+        return f"User('{self.id}','{self.name}', '{self.email}')"
 
-class Admin(db.Model):
+class Admin(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -28,30 +28,28 @@ class Admin(db.Model):
     def __repr__(self):
         return f"User('{self.name}', '{self.email}')"
 
-class Ticket(db.Model):
+class Ticket(db.Model,UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     flight_id=db.Column(db.Integer,db.ForeignKey('flight.id'),nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    time = db.Column(db.Integer,nullable=False)
-    adult = db.Column(db.Integer, nullable=False)
-    kid = db.Column(db.Integer, nullable=False)
+    passenger = db.Column(db.Integer, nullable=False)
+    cost=db.Column(db.Integer,nullable=False)
 
     # relation to user
     def __repr__(self):
-        return f"Ticket('{self.name}', '{self.date}', '{self.adult}','{self.kid}')"
+        return f"Ticket('{self.id}','{self.user_id}', '{self.passenger}', '{self.cost}','{self.User}')"
 
-class Flight(db.Model):
+class Flight(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.Integer,nullable=False)
     form= db.Column(db.String(100), nullable=False)
     to = db.Column(db.String(100), nullable=False)
+    cost= db.Column(db.Integer,nullable=False)
     seat= db.Column(db.Integer,nullable=False,default=0)
-    ticket= db.relationship("Ticket", backref="user",lazy=True)
+    ticket= db.relationship("Ticket", backref="Flight")
 
     def __repr__(self):
-        return f"Ticket('{self.name}', '{self.date}', '{self.date}','{self.time}','{self.form}','{self.to}')"
+        return f"flight('{self.id}','{self.name}',' {self.date}','{self.seat}','{self.time}','{self.form}','{self.cost}','{self.to}')"

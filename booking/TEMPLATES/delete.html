@@ -2,6 +2,7 @@
 {%block content%}
 
 <form action="">
+{{form.hidden_tag()}}
 {{form.name.label}}
 {{form.name}}
 {{form.form.label}}
@@ -13,7 +14,7 @@
 {{form.time.label}}
 {{form.time}}
 
-{{form.sumbit}}
+{{form.submit(class="btn")}}
 
 </form>
 {%endblock content%}

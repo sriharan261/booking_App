@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import  StringField , IntegerField, SubmitField ,DateField,PasswordField,BooleanField
+from wtforms.fields import DateField
+from wtforms import  StringField , IntegerField, SubmitField ,DateField,PasswordField,BooleanField,TimeField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from booking.model import User
-
+import datetime
 
 class Flights(FlaskForm):
     dep = StringField( "From", validators=[DataRequired()])
@@ -48,24 +49,26 @@ class AddFlight(FlaskForm):
     name=StringField("name",validators=[DataRequired()])
     form=StringField("form",validators=[DataRequired()])
     to=StringField("to",validators=[DataRequired()])
-    date=DateField("date",validators=[DataRequired()],format='%Y-%m-%d')
-    time=IntegerField("time",validators=[DataRequired(),Length(min=4,max=4)])
-    sumbit=SubmitField("submit")
+    date=DateField("date",validators=[DataRequired()])
+    time=IntegerField("time",validators=[DataRequired()])
+    cost=IntegerField("Price",validators=[DataRequired()])
+    submit=SubmitField("submit")
     
 class RemoveFlight(FlaskForm):
     name=StringField("name",validators=[DataRequired()])
     form=StringField("form")
     to=StringField("to")
-    date=DateField("date",format='%Y-%m-%d')
-    time=IntegerField("time",validators=[Length(min=4,max=4)])
-    sumbit=SubmitField("submit")    
+    date=DateField("date")
+    time=IntegerField("time")
+    submit=SubmitField("sumbit")    
+# x=datetime.datetime(1,1,1,1,1,1)
 
 class SearchFlight(FlaskForm):
     name=StringField("name",validators=[DataRequired()])
     form=StringField("form")
     to=StringField("to")
-    date=DateField("date",format='%Y-%m-%d')
-    time=IntegerField("time",validators=[Length(min=4,max=4)])
-    sumbit=SubmitField("submit")    
+    date=DateField("date")
+    time=IntegerField("time")
+    submit=SubmitField("sumbit")    
 
 

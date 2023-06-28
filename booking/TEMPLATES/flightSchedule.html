@@ -1,9 +1,35 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>{{ current_user.name }}</h1>
-    {% for flight in flights %}
-      <li>{{ flight }}</li>
-    {% endfor %}
- 
 
+    
+    <table>
+      <thead>
+         <tr>
+            <td>Name</td>
+            <td>Date</td>
+            <td>Time</td>
+            <td>from</td>
+            <td>To</td>
+            <td>Passengers</td>
+            <td>Cost</td>
+         </tr>
+      </thead>
+      <tbody>
+        {% for fl in flights%}
+        <tr>
+        <td>{{fl.Flight.name}}</td>
+        <td>{{fl.Flight.date}}</td>
+        <td>{{fl.Flight.time}}</td>
+        <td>{{fl.Flight.form}}</td>
+        <td>{{fl.Flight.to}}</td>
+        <td>{{fl.passenger}}</td>
+        <td>{{fl.cost}}</td>
+        </tr>
+        {% endfor%}
+      </tbody>
+      </table>
+
+
+    </table>
 {% endblock content %}
