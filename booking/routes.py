@@ -3,7 +3,7 @@ from booking import app ,db ,bcrypt
 from booking.form import Flights ,LoginForm,RegistrationForm,LoginAdminForm,AddFlight,RemoveFlight,SearchFlight
 from booking.model import User,Flight,Ticket, Admin
 from flask_login import login_user, current_user, logout_user, login_required
-
+from datetime import date as d
 
 @app.route("/")
 @app.route("/home",methods=['GET', 'POST'])
@@ -11,17 +11,23 @@ def home():
       form=Flights()
       (form)
       if form.validate_on_submit():
-        date=form.depDate.data
-        fom = form.dep.data
-        to=form.arv.data
-        count=int(form.adult.data)+int(form.child.data)
-        flight =Flight.query.filter_by(form=fom,to=to,date=date).all()
-        l=[]
-        for i in flight:
-             if i.seat+count< 61:   
-                    l.append(i)
-                    
-        return render_template('flight.html',flights=l,c=count)
+        
+            date=form.depDate.data
+            if(not(date>=d.today())):
+                return render_template("home.html",form=form)
+            fom = form.dep.data
+            to=form.arv.data
+            count=int(form.adult.data)+int(form.child.data)
+            flight =Flight.query.filter_by(form=fom,to=to,date=date).all()
+            l=[]
+            for i in flight:
+                if i.seat+count< 61:   
+                        l.append(i)
+                        
+            return render_template('flight.html',flights=l,c=count)
+        
+           
+
       return render_template("home.html",form=form)
 
 
@@ -112,109 +118,122 @@ def adminlogin():
 
 @app.route("/adminhome")
 def adminhome():
-    return render_template("adminhome.html")
+    if current_user.is_authenticated:
+        return render_template("adminhome.html")
+    else:
+         return redirect(url_for("adminlogin"))
 
 
 @app.route("/add",methods=['GET', 'POST'])
 def add():
-    form=AddFlight()
-    print(form.validate_on_submit())
-    if form.validate_on_submit():
-        name=form.name.data
-        from1 =form.form.data
-        to=form.to.data
-        date=form.date.data
-        print("Printing Date")
-        time =form.time.data
-        cost=form.cost.data
-        flight =Flight(name=name,time=time,date=date,form=from1 ,to=to,cost=cost)
-        db.session.add(flight)
-        db.session.commit()
-        return redirect(url_for('adminhome'))
-    else:
-            print('We messed up')
+    if current_user.is_authenticated:
+        form=AddFlight()
+        print(form.validate_on_submit())
+        if form.validate_on_submit():
             name=form.name.data
             from1 =form.form.data
             to=form.to.data
             date=form.date.data
-            print(name)
-            print(from1)
-            print(to)
-            print(date)
-            if form.errors != {}:
-                for err in form.errors.values():
-                    print(f"There was an error with creating user: {err}") 
-    return render_template("add.html",form=form)
-
+            if(not(date>=d.today())):
+                return render_template("add.html",form=form)
+            print("Printing Date")
+            time =form.time.data
+            cost=form.cost.data
+            flight =Flight(name=name,time=time,date=date,form=from1 ,to=to,cost=cost)
+            db.session.add(flight)
+            db.session.commit()
+            return redirect(url_for('adminhome'))
+        else:
+                print('We messed up')
+                name=form.name.data
+                from1 =form.form.data
+                to=form.to.data
+                date=form.date.data
+                print(name)
+                print(from1)
+                print(to)
+                print(date)
+                if form.errors != {}:
+                    for err in form.errors.values():
+                        print(f"There was an error with creating user: {err}") 
+        return render_template("add.html",form=form)
+    else:
+         return redirect(url_for("adminlogin"))
 
 @app.route("/delete",methods=['GET', 'POST'])
 def delete():
-    form =RemoveFlight()
-    if form.validate_on_submit():
-            flight =Flight(name=form.name.data, date=form.date.data,time=form.time.data, form=form.form.data ,to=form.to.data)
-            db.session.delete(flight)
-            db.session.commit()
-            return redirect(url_for('adminhome'))
+    if current_user.is_authenticated:
+        form =RemoveFlight()
+        if form.validate_on_submit():
+                flight =Flight(name=form.name.data, date=form.date.data,time=form.time.data, form=form.form.data ,to=form.to.data)
+                db.session.delete(flight)
+                db.session.commit()
+                return redirect(url_for('adminhome'))
 
-    return render_template("delete.html",form=form)
+        return render_template("delete.html",form=form)
+    else:
+         return redirect(url_for("adminlogin"))
 
 
 @app.route("/search",methods=['GET', 'POST'])
 def search():
-    form=SearchFlight()
-    print(form.validate_on_submit())
-    name=form.name.data
-    if form.validate_on_submit():
+    if current_user.is_authenticated:
+        form=SearchFlight()
+        print(form.validate_on_submit())
         name=form.name.data
-        from1 =form.form.data
-        to=form.to.data
-        date=form.date.data
-        print("Printing Date")
-        time =form.time.data
-        x=Flight.query.filter_by(name=name,form=from1,to=to,date=date,time=time).all()
-        return render_template("serach.html",form=form,flights=x)
-    elif(name):
-            print('We messed up')
+        if form.validate_on_submit():
             name=form.name.data
             from1 =form.form.data
             to=form.to.data
             date=form.date.data
-            time=form.time.data
-            print(name)
-            print(from1)
-            print(to)
-            print(date)
-            flight=Flight.query.filter_by(name=name).order_by(Flight.date.desc()).all()
-            if form.errors != {}:
-                for err in form.errors.values():
-                    print(f"There was an error : {err}")
-            l=[]
-            if(date):
-                 for i in flight:
-                    if(i.date==date and i not in l) :
-                         l=l+[i]
-            if(from1):
-                 for i in flight:
-                        if(i.form ==from1 and i not in l ):
-                             l=l+[i]
-            if(time ):
-                 for i in l:
-                    if(i.time==time and i not in l) :
-                         l=l+[i]
-            if(to ):
-                 for i in flight:
-                    if(i.to==to and i not in l) :
-                         l=l+[i]
-            if(flight ):
-                 print(flight)
-            else:
-                 print("Failure")
-            if(len(l)==0):
-                 l=flight                
-            for i in flight:
-                 print(i.name)
-            return render_template("serach.html",form=form,flights=l)
-    return render_template("serach.html",form=form)
+            print("Printing Date")
+            time =form.time.data
+            x=Flight.query.filter_by(name=name,form=from1,to=to,date=date,time=time).all()
+            return render_template("serach.html",form=form,flights=x)
+        elif(name):
+                print('We messed up')
+                name=form.name.data
+                from1 =form.form.data
+                to=form.to.data
+                date=form.date.data
+                time=form.time.data
+                print(name)
+                print(from1)
+                print(to)
+                print(date)
+                flight=Flight.query.filter_by(name=name).order_by(Flight.date.desc()).all()
+                if form.errors != {}:
+                    for err in form.errors.values():
+                        print(f"There was an error : {err}")
+                l=[]
+                if(date):
+                    for i in flight:
+                        if(i.date==date and i not in l) :
+                            l=l+[i]
+                if(from1):
+                    for i in flight:
+                            if(i.form ==from1 and i not in l ):
+                                l=l+[i]
+                if(time ):
+                    for i in l:
+                        if(i.time==time and i not in l) :
+                            l=l+[i]
+                if(to ):
+                    for i in flight:
+                        if(i.to==to and i not in l) :
+                            l=l+[i]
+                if(flight ):
+                    print(flight)
+                else:
+                    print("Failure")
+                if(len(l)==0):
+                    l=flight                
+                for i in flight:
+                    print(i.name)
+                return render_template("serach.html",form=form,flights=l)
+        return render_template("serach.html",form=form)
+    else:
+         return redirect(url_for("adminlogin"))
 
 
 @app.route("/logout")
